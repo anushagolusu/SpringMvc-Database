@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Department Client</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+<script>
+function getAllDepts(){
+ $.getJSON("/rest/dept/getAllDepts",null,function(depts){
+  console.log(depts)
+  st=""
+   for(var i=0;i<depts.length;i++)
+    st+="<li>"+depts[i].id+","+depts[i].name+"</li>";
+    $("#depts").html(st);
+  });
+  }
+  
+  function addDept(){
+    $.ajax({
+    url:"/rest/dept/add",
+    type:"post",
+     success:function(){
+      alert("dept has been added successfully")
+     },
+    error:function(){
+      alert("dept was not  added due to error")
+     },
+    data:{
+      "id":$("#deptid").val(),
+      "name":$("#deptname").val()
+   }
+   });
+  }
+  function deleteDept(){
+     $.ajax({
+       url:"/rest/dept/"+$("#deptid").val(),
+       type:"delete",
+      success:function(){
+        alert("dept has been deleted successfully")
+      },
+     error:function(xhr,s){
+      console.log("status:"+s);
+       msg=xhr.responseJSON.message
+       console.log("Message:"+msg);
+       alert("dept was not deleted due to error:"+msg)
+    }
+    });
+    }
+    function getDept(){
+       $.ajax({
+       url:"/rest/dept"+$("#deptid").val(),
+      type:"get",
+      success:function(dept){
+        $("#deptname").val(dept.name)
+      },
+      error:function(xhr,s,msg){
+      error=xhr.responseJSON.message
+      alert(error)
+      }
+      });
+      }
+      
+      function updateDept(){
+         $.ajax({
+         url:"/rest/dept/updateDept"+$("#deptid").val(),
+         type:"put",
+        success:function(){
+          alert("dept has been updated successfully")
+       },
+        error:function(){
+         alert("dept has been not updated due to error!")
+       },
+         data:{
+          "id":$("#deptid").val(),
+          "name":$("#deptname").val()
+       }
+       });
+       }
+</script>
+</head>
+<body>
+<h1>Department Client</h1>
+<h2>Add or Delete Department</h2>
+Id
+<input type="number" id="deptid"/>Name
+<input type="text" id="deptname"/><p/>
+<button onClick="getDept()">Get</button>
+<button onClick="updateDept()">Update</button>
+<button onClick="addDept()">Add</button>
+<button onClick="deleteDept()">Delete</button>
+</hr>
+<button onClick="getAllDepts()">Get All Departments</button>
+<ul id="depts">
+</ul>
+</body>
+</html>
